@@ -2,6 +2,7 @@ package com.example.dynamicapp;
 
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +28,9 @@ public class ActivityResult extends AppCompatActivity {
 
         list = (ArrayList<RowData>) getIntent().getExtras().getSerializable("list");
 
-        recyclerView.setAdapter(new RowDataAdapter(list));
+        Toast.makeText(this, list.get(0).getOptionList().get(0).optionText.toString(), Toast.LENGTH_SHORT).show();
+
+        recyclerView.setAdapter(new RowDataAdapter(list, ActivityResult.this));
 
     }
 }

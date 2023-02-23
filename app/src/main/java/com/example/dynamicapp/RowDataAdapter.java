@@ -1,34 +1,45 @@
 package com.example.dynamicapp;
 
+import android.content.Context;
 import android.inputmethodservice.Keyboard;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 public class RowDataAdapter extends RecyclerView.Adapter<RowDataAdapter.RowDataView> {
-
+    private static final String TAG = "DataAdapter";
 
     ArrayList<RowData> list = new ArrayList<>();
+    Context context = null;
 
-    public RowDataAdapter(ArrayList<RowData> list) {
+    public RowDataAdapter(ArrayList<RowData> list, Context context) {
         this.list = list;
+        this.context = context;
     }
 
     public class RowDataView extends RecyclerView.ViewHolder {
-        TextView textQuestion, textOption;
+        private TextView textQuestion, textOption;
+        private RecyclerView listLayout;
+
         public RowDataView(@NonNull View itemView) {
             super(itemView);
 
             textQuestion = (TextView) itemView.findViewById(R.id.textQuestion);
             textOption = (TextView) itemView.findViewById(R.id.textOption);
+            listLayout = (RecyclerView) itemView.findViewById(R.id.recyclerViewOption);
+
         }
     }
+
 
     @NonNull
     @Override
@@ -41,8 +52,17 @@ public class RowDataAdapter extends RecyclerView.Adapter<RowDataAdapter.RowDataV
     @Override
     public void onBindViewHolder(@NonNull RowDataView holder, int position) {
         RowData rowData = list.get(position);
+
+        // List Options
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
+        holder.listLayout.setLayoutManager(layoutManager);
+
+        holder.listLayout.setAdapter(new RowDataAdapterList(rowData.getOptionList()));
+
         holder.textQuestion.setText(rowData.getQuestion());
         holder.textOption.setText(rowData.getOption());
+
+        Log.i(TAG, rowData.getOptionList().toString());
     }
 
     @Override
@@ -50,3 +70,5 @@ public class RowDataAdapter extends RecyclerView.Adapter<RowDataAdapter.RowDataV
         return list.size();
     }
 }
+
+

@@ -1,11 +1,8 @@
 package com.example.dynamicapp;
 
-import static com.example.dynamicapp.R.id.btnAdd;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,7 +20,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private LinearLayout layoutList;
     private Button btnAdd, btnSubmit;
-    private List<String> stringList = new ArrayList<>();
+    private List<String> stringList= new ArrayList<>();
+    private List<String> stringListOption = new ArrayList<>();
     private ArrayList<RowData> list = new ArrayList<>();
 
     @Override
@@ -60,20 +58,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         stringList.add("2nd option");
         stringList.add("3rd option");
 
-
+        stringListOption.add("False");
+        stringListOption.add("True");
     }
 
     private boolean readData() {
 
         boolean result = true;
+        boolean resultOption;
+        boolean sameOptions = false;
 
         list.clear();
 
         for(int i=0; i < layoutList.getChildCount(); i++) {
+            resultOption = false;
+
             View view = layoutList.getChildAt(i);
 
             EditText editText = (EditText) view.findViewById(R.id.editText);
             AppCompatSpinner spinner = (AppCompatSpinner) view.findViewById(R.id.spinner);
+            LinearLayout listOption = (LinearLayout) view.findViewById(R.id.layoutListOptions);
 
             RowData rowData = new RowData();
 
@@ -91,6 +95,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
 
+            ArrayList<Option> listOfOptions= new ArrayList<>();
+
+            for(int n=0; n < listOption.getChildCount(); n++) {
+
+                View viewOption = listOption.getChildAt(n);
+
+                EditText editTextOption = (EditText) viewOption.findViewById(R.id.editTextOption);
+                AppCompatSpinner spinnerOption = (AppCompatSpinner) viewOption.findViewById(R.id.spinnerOptions);
+
+                Option optionModel = new Option();
+
+                if (!editTextOption.getText().toString().equals(null)) {
+                    optionModel.setOptionText(editTextOption.getText().toString());
+                } else {
+                    result = false;
+                    break;
+                }
+
+                if (spinnerOption.getSelectedItemPosition() == 1) {
+//                    if they are at least one true answer
+                    resultOption = true;
+                }
+
+                optionModel.setOptionStatus(stringListOption.get(spinnerOption.getSelectedItemPosition()));
+
+                listOfOptions.add(optionModel);
+            }
+
+            if (!resultOption) {
+                sameOptions = true;
+            }
+
+            if(!sameOptions) {
+                rowData.setOptionList(listOfOptions);
+            }
+
             list.add(rowData);
         }
 
@@ -99,7 +139,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "Add at least one", Toast.LENGTH_SHORT).show();
         } else if (!result) {
             Toast.makeText(this, "Enter valid data", Toast.LENGTH_SHORT).show();
+        } else if (sameOptions) {
+            result = false;
+            Toast.makeText(this, "There must be at least one correct answer", Toast.LENGTH_SHORT).show();
         }
+
+        //Toast.makeText(this, "Sending", Toast.LENGTH_SHORT).show();
 
         return result;
     }
@@ -111,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         AppCompatSpinner spinner = (AppCompatSpinner) view.findViewById(R.id.spinner);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageRemove);
 
+//        Add option
+        Button btnAddOption = (Button) view.findViewById(R.id.btnAddOption);
+
         ArrayAdapter adapter = new ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, stringList);
         spinner.setAdapter(adapter);
 
@@ -121,6 +169,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        btnAddOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout layoutListOptions = (LinearLayout) view.findViewById(R.id.layoutListOptions);
+                addViewOption(layoutListOptions);
+            }
+        });
+
         layoutList.addView(view);
     }
 
@@ -128,7 +184,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         layoutList.removeView(view);
 
+    }
 
+    private void addViewOption(LinearLayout layoutListOptions) {
+        View viewOption = getLayoutInflater().inflate(R.layout.row_option, null, false);
+
+        AppCompatSpinner spinner = (AppCompatSpinner) viewOption.findViewById(R.id.spinnerOptions);
+        ImageView imageView = (ImageView) viewOption.findViewById(R.id.imageRemoveOption);
+
+
+        ArrayAdapter adapter = new ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, stringListOption);
+        spinner.setAdapter(adapter);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeViewOption(layoutListOptions, viewOption);
+            }
+        });
+
+        layoutListOptions.addView(viewOption);
+    }
+
+    private void removeViewOption(LinearLayout layoutList, View view) {
+        layoutList.removeView(view);
     }
 
     @Override

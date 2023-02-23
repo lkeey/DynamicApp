@@ -16,15 +16,20 @@
         android:layout_margin="15dp"
         android:textColor="@color/black" />
 
-
-    <LinearLayout
-        android:id="@+id/layoutList"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginBottom="20dp">
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layoutList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
+        </LinearLayout>
+
+    </ScrollView>
 
     <Button
         android:id="@+id/btnAdd"

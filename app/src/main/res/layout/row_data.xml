@@ -28,6 +28,14 @@
             android:textSize="14sp"
             android:textColor="@color/material_dynamic_primary60"/>
 
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewOption"
+            android:layout_margin="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
