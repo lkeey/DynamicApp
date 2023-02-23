@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,9 +15,11 @@ import java.util.ArrayList;
 class RowDataAdapterList extends RecyclerView.Adapter<RowDataAdapterList.RowDataListView> {
     private static final String TAG = "AdapterList";
     ArrayList<Option> list = new ArrayList<>();
+    OptionListListener listener;
 
-    public RowDataAdapterList(ArrayList<Option> list) {
+    public RowDataAdapterList(ArrayList<Option> list, OptionListListener listener) {
         this.list = list;
+        this.listener = listener;
     }
 
     public class RowDataListView extends RecyclerView.ViewHolder {
@@ -47,6 +50,13 @@ class RowDataAdapterList extends RecyclerView.Adapter<RowDataAdapterList.RowData
         holder.textOptionList.setText(option.getOptionText());
         holder.textOptionStatus.setText(option.getOptionStatus());
 
+        holder.textOptionList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onNoteClicked(option);
+            }
+        });
+        
         Log.i(TAG, option.getOptionText());
     }
 

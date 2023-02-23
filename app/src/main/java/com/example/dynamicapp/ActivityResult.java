@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class ActivityResult extends AppCompatActivity {
+public class ActivityResult extends AppCompatActivity implements OptionListListener {
 
     private RecyclerView recyclerView;
     private ArrayList<RowData> list = new ArrayList<>();
@@ -30,7 +30,19 @@ public class ActivityResult extends AppCompatActivity {
 
         Toast.makeText(this, list.get(0).getOptionList().get(0).optionText.toString(), Toast.LENGTH_SHORT).show();
 
-        recyclerView.setAdapter(new RowDataAdapter(list, ActivityResult.this));
+        recyclerView.setAdapter(new RowDataAdapter(list, ActivityResult.this, this));
 
+    }
+
+    @Override
+    public void onNoteClicked(Option option) {
+        Toast.makeText(this, "CLICKED", Toast.LENGTH_SHORT).show();
+    
+        if (option.getOptionStatus().equals("True")) {
+            Toast.makeText(this, "WIN", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "FAIL", Toast.LENGTH_SHORT).show();
+        }
+        
     }
 }

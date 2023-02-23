@@ -15,16 +15,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import javax.sql.RowSetListener;
+
 public class RowDataAdapter extends RecyclerView.Adapter<RowDataAdapter.RowDataView> {
     private static final String TAG = "DataAdapter";
 
     ArrayList<RowData> list = new ArrayList<>();
     Context context = null;
+    OptionListListener listener;
 
-    public RowDataAdapter(ArrayList<RowData> list, Context context) {
+    public RowDataAdapter(ArrayList<RowData> list, Context context, OptionListListener listener) {
         this.list = list;
         this.context = context;
+        this.listener = listener;
     }
+
 
     public class RowDataView extends RecyclerView.ViewHolder {
         private TextView textQuestion, textOption;
@@ -57,7 +62,7 @@ public class RowDataAdapter extends RecyclerView.Adapter<RowDataAdapter.RowDataV
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, RecyclerView.VERTICAL, false);
         holder.listLayout.setLayoutManager(layoutManager);
 
-        holder.listLayout.setAdapter(new RowDataAdapterList(rowData.getOptionList()));
+        holder.listLayout.setAdapter(new RowDataAdapterList(rowData.getOptionList(), listener));
 
         holder.textQuestion.setText(rowData.getQuestion());
         holder.textOption.setText(rowData.getOption());
